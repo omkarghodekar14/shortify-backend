@@ -15,10 +15,22 @@ dotenv.config("./.env")
 
 const app = express();
 
+const allowedOrigins = [
+    "https://shortifyurlshortner.netlify.app",
+    "http://localhost:5173"
+];
+
 app.use(cors({
-    origin: '*', // your React app
-    credentials: true // 👈 this allows cookies to be sent
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    credentials: true
 }));
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
